@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .red {
+            color: red;
+        }
+        .blue {
+            color: blue;
+        }
+        .user {
+            padding: 10px;
+            background: white;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>{{ product | uppercase | lowercase }} are in stock.</h2>
+        <button v-on:click="changeProduct">Change Product</button>
+        <input type="text" v-on:input="cssClass = $event.target.value">
+        <p v-bind:class="cssClass">Ephraim Hosea</p>
+        <p>Counter:  {{counter}} , {{counter1}}</p>
+        <br><hr>
+        <app-user></app-user>
+        <br><hr>
+        <ul>
+            <li v-for="product1 in products" v-if="product1.id < 20">
+               {{product1.id}} {{product1.userId}} {{product1.title}}
+            </li>
+        </ul>
+    </div>
+<script src="https://unpkg.com/vue"></script>
+<script>
+    Vue.filter('uppercase', (value) => {
+        return value.toUpperCase()
+    }) //global filters
+    Vue.component('app-user', {
+        data: () => {
+            return {
+                users: [
+                    {username: 'Max'},
+                    {username: 'Chris'},
+                    {username: 'Anna'}
+                ]
+            }
+        },
+        template: `
+        <div>
+            <div class="user" v-for="user in users">
+                <p>Username: {{user.username}} </p>
+            </div>
+        </div>
+        `
+    })
+    const app = new Vue({
+        el: '#app',
+        data: {
+            product: 'Boots',
+            products: [],
+            cssClass: '',
+            counter: 1
+        },
+        created() {
+            fetch('https://jsonplaceholder.typicode.com/todos/')
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                this.products = json
+            })
+        },
+        methods: {
+            changeProduct() {
+                this.product = 'sockses'
+            }
+        },
+        computed: {
+            counter1() {
+                return this.product.length
+            }
+        },
+        filters: {
+            lowercase: (value)=>{
+                return value.toLowerCase()
+            }
+        }
+    })
+</script>    
+</body>
+</html>
